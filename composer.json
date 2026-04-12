@@ -18,8 +18,8 @@
     ],
     "scripts": {
         "test": "./vendor/bin/phpunit --testdox tests",
-        "lint": "./vendor/bin/phpcs --standard=PSR12 src/",
-        "fix": "./vendor/bin/phpcbf --standard=PSR12 src/",
+        "lint": "./vendor/bin/phpcs --standard=PSR12 src/ bin/",
+        "fix": "./vendor/bin/phpcbf --standard=PSR12 src/ bin/",
         "analyse": "./vendor/bin/phpstan analyse"
     }
 }

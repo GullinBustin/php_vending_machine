@@ -67,7 +67,9 @@ class VendingMachine
      */
     public function returnCoins(): array
     {
-        return $this->inserted_coins;
+        $coins = $this->inserted_coins;
+        $this->inserted_coins = [];
+        return $coins;
     }
 
     /**
