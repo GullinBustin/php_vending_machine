@@ -10,9 +10,19 @@ class VendingMachine
     protected array $allowed_coins;
 
     /**
-     * @var array<string, float> Dictionary of product names to prices
+     * @var CoinInventory Inventory of coins available for change
+     */
+    protected CoinInventory $coin_inventory;
+
+    /**
+     * @var array<string, float> Dictionary of product names to Product objects
      */
     protected array $products;
+
+    /**
+     * @var ProductInventory Inventory of products available for purchase
+     */
+    protected ProductInventory $product_inventory;
 
     /**
      * @var float[] List of inserted coin amounts
@@ -29,6 +39,8 @@ class VendingMachine
 
     public function __construct()
     {
+        $this->coin_inventory = new CoinInventory($this->allowed_coins);
+        $this->product_inventory = new ProductInventory($this->products);
         $this->inserted_coins = [];
     }
 
@@ -40,7 +52,7 @@ class VendingMachine
      */
     public function insertCoin(float $coin): void
     {
-        if (!in_array($coin, $this->allowed_coins, true)) {
+        if (!$this->coin_inventory->isAllowed($coin)) {
             throw new \InvalidArgumentException("Coin value $coin is not allowed.");
         }
         $this->inserted_coins[] = $coin;
@@ -64,14 +76,14 @@ class VendingMachine
     public function returnChange(float $amount): array
     {
         $change = [];
-        $remaining = $amount;
-        $coins = $this->allowed_coins;
-        rsort($coins, SORT_NUMERIC); // Sort coins descending
+        $remaining = round($amount, 2);
+        $coins = $this->coin_inventory->getCoinValues();
         foreach ($coins as $coin) {
-            while ($remaining >= $coin) { // Floating point tolerance
+            while ($remaining >= $coin && $this->coin_inventory->hasCoin($coin)) {
                 $change[] = $coin;
                 $remaining -= $coin;
                 $remaining = round($remaining, 2); // Avoid floating point issues
+                $this->coin_inventory->removeCoin($coin); // Decrease coin count
             }
         }
         return $change;
@@ -86,15 +98,19 @@ class VendingMachine
      */
     public function buyProduct(string $product): array
     {
-        if (!array_key_exists($product, $this->products)) {
+        if (!$this->product_inventory->hasProduct($product)) {
             throw new \InvalidArgumentException("Product '$product' does not exist.");
         }
-        $price = $this->products[$product];
-        if ($this->totalInsertedMoney() < $price) {
+        if ($this->totalInsertedMoney() < $this->product_inventory->getPrice($product)) {
             throw new \InvalidArgumentException("Insufficient funds to buy '$product'.");
         }
-        $change_amount = $this->totalInsertedMoney() - $price;
+        if (!$this->product_inventory->hasStock($product)) {
+            throw new \InvalidArgumentException("Product '$product' is out of stock.");
+        }
+        $change_amount = $this->totalInsertedMoney() - $this->product_inventory->getPrice($product);
+        $this->coin_inventory->addInsertedCoins($this->inserted_coins); // Add inserted coins to inventory
         $this->inserted_coins = []; // Clear inserted coins after purchase
+        $this->product_inventory->decrementStock($product); // Decrease product count
         return $this->returnChange($change_amount);
     }
 }

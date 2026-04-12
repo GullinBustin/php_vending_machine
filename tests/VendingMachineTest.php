@@ -66,7 +66,7 @@ class VendingMachineTest extends TestCase
     {
         return [
             'enough for water' => [[1.0], 'Water'],
-            'exact for soda' => [[1.0, 0.5], 'Soda'],
+            'exact for soda' => [[1.0, 1.0], 'Soda'],
         ];
     }
 
@@ -84,7 +84,7 @@ class VendingMachineTest extends TestCase
     public static function buyProductInsufficientFundsProvider(): array
     {
         return [
-            'not enough for juice' => [[0.5], 'Juice'],
+            'not enough for juice' => [[0.25, 0.25], 'Juice'],
             'not enough for soda' => [[1.0], 'Soda'],
         ];
     }
