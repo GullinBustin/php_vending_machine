@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vending;
 
 class CoinInventory
@@ -16,12 +18,13 @@ class CoinInventory
 
     /**
      * @param float[] $coinValues
+     * @param int $initialStock Initial stock count for each coin
      */
-    public function __construct(array $coinValues)
+    public function __construct(array $coinValues, int $initialStock = 10)
     {
         rsort($coinValues, SORT_NUMERIC);
         $this->coinValues = $coinValues;
-        $this->coinCounts = array_fill(0, count($coinValues), 10);
+        $this->coinCounts = array_fill(0, count($coinValues), $initialStock);
     }
 
     /**

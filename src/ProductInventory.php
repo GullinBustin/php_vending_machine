@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vending;
 
 class ProductInventory
@@ -21,12 +23,13 @@ class ProductInventory
 
     /**
      * @param array<string, float> $products Associative array of product name => price
+     * @param int $initialStock Initial stock count for each product
      */
-    public function __construct(array $products)
+    public function __construct(array $products, int $initialStock = 10)
     {
         $this->productNames = array_keys($products);
         $this->productPrices = array_values($products);
-        $this->productCounts = array_fill(0, count($products), 10);
+        $this->productCounts = array_fill(0, count($products), $initialStock);
     }
 
     /**
