@@ -11,3 +11,5 @@ WORKDIR /app
 COPY . .
 
 RUN composer install
+
+CMD ["php", "bin/cli.php"]

@@ -27,6 +27,7 @@ class VendingMachineTest extends TestCase
         $vm->insertCoin(0.1);
         $vm->insertCoin(0.25);
         $this->assertEquals([0.1, 0.25], $vm->returnCoins());
+        $this->assertEquals([], $vm->returnCoins()); // Coins should be cleared after returning
     }
 
     public function testReturnCoinsWhenEmpty()
