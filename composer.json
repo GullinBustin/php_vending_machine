@@ -2,11 +2,13 @@
     "name": "javier/php_vending_machine",
     "type": "project",
     "require-dev": {
-        "phpunit/phpunit": "^13.1"
+        "phpunit/phpunit": "^13.1",
+        "squizlabs/php_codesniffer": "^4.0",
+        "phpstan/phpstan": "^2.1"
     },
     "autoload": {
         "psr-4": {
-            "Javier\\PhpVendingMachine\\": "src/"
+            "Vending\\": "src/"
         }
     },
     "authors": [
@@ -14,5 +16,10 @@
             "name": "Javier Portillo"
         }
     ],
-    "require": {}
+    "scripts": {
+        "test": "./vendor/bin/phpunit --testdox tests",
+        "lint": "./vendor/bin/phpcs --standard=PSR12 src/",
+        "fix": "./vendor/bin/phpcbf --standard=PSR12 src/",
+        "analyse": "./vendor/bin/phpstan analyse"
+    }
 }
