@@ -8,14 +8,13 @@ require __DIR__ . '/cli_functions.php';
 
 $vm = new Vending\CustomVendingMachine();
 
-printHelp();
-
 $stop = false;
 while (!$stop) {
     echo "\n> ";
     $input = trim(fgets(STDIN));
     if (strtolower($input) === 'exit') {
         $stop = true;
+        continue;
     }
     if ($input === '') {
         continue;

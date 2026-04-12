@@ -34,7 +34,7 @@ function parseInput(string $input): array
     $command = null;
     $coins = [];
     foreach ($parts as $part) {
-        if (preg_match('/^(GET-.+|RETURN-COIN|SERVICE)$/i', $part)) {
+        if (preg_match('/^(GET-.+|RETURN-COIN|SERVICE|HELP)$/i', $part)) {
             $command = strtoupper($part);
         } elseif (is_numeric($part)) {
             $coins[] = (float)$part;
@@ -43,6 +43,12 @@ function parseInput(string $input): array
         }
     }
     return ['coins' => $coins, 'command' => $command];
+}
+
+function parseCoints(array $coins): string
+{
+    $formatted = array_map(fn($c) => number_format($c, 2), $coins);
+    return implode(', ', $formatted);
 }
 
 /**
@@ -54,7 +60,7 @@ function parseInput(string $input): array
 function handleReturnCoin(CustomVendingMachine $vm): void
 {
     $returned = $vm->returnCoins();
-    echo "Returned coins: " . implode(',', $returned) . "\n";
+    echo parseCoints($returned) . "\n";
 }
 
 /**
@@ -68,8 +74,10 @@ function handleGetProduct(CustomVendingMachine $vm, string $command): void
 {
     $product = substr($command, 4);
     $change = $vm->buyProduct(ucfirst(strtolower($product)));
-    echo "Product: $product\n";
-    echo "Change: " . implode(',', $change) . "\n";
+    echo "$product";
+    if (count($change) > 0) {
+        echo ", " . parseCoints($change) . "\n";
+    }
 }
 
 /**
@@ -166,11 +174,14 @@ function processCommand(CustomVendingMachine $vm, array $coins, ?string $command
                 case $command === 'SERVICE':
                     handleService($vm);
                     break;
+                case $command === 'HELP':
+                    printHelp();
+                    break;
                 default:
                     echo "Unknown command. Type 'help' for options.\n";
             }
         } elseif (count($coins) > 0) {
-            echo "Inserted: " . implode(',', $coins) . "\n";
+            echo parseCoints($coins) . "\n";
         }
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage() . "\n";
