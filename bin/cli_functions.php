@@ -45,6 +45,12 @@ function parseInput(string $input): array
     return ['coins' => $coins, 'command' => $command];
 }
 
+/**
+ * Format an array of coins into a string for output.
+ * 
+ * @param float[] $coins
+ * @return string
+ */
 function parseCoints(array $coins): string
 {
     $formatted = array_map(fn($c) => number_format($c, 2), $coins);
