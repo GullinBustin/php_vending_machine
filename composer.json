@@ -1,0 +1,18 @@
+{
+    "name": "javier/php_vending_machine",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^13.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Javier\\PhpVendingMachine\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Javier Portillo"
+        }
+    ],
+    "require": {}
+}
