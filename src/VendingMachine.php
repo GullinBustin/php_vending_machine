@@ -39,10 +39,10 @@ class VendingMachine
         return array_sum($this->inserted_coins);
     }
 
-    public function __construct()
+    public function __construct(int $productStock = 10, int $coinStock = 10)
     {
-        $this->coin_inventory = new CoinInventory($this->allowed_coins);
-        $this->product_inventory = new ProductInventory($this->products);
+        $this->coin_inventory = new CoinInventory($this->allowed_coins, $coinStock);
+        $this->product_inventory = new ProductInventory($this->products, $productStock);
         $this->inserted_coins = [];
     }
 
@@ -114,5 +114,28 @@ class VendingMachine
         $this->inserted_coins = []; // Clear inserted coins after purchase
         $this->product_inventory->decrementStock($product); // Decrease product count
         return $this->returnChange($change_amount);
+    }
+
+    /**
+     * Set the stock of a product to n
+     *
+     * @param string $product
+     * @param int $stock
+     */
+    public function setProductStock(string $product, int $stock): void
+    {
+        $this->product_inventory->setStock($product, $stock);
+    }
+
+
+    /**
+     * Set the count of a coin to n
+     *
+     * @param float $coin
+     * @param int $count
+     */
+    public function setCoinCount(float $coin, int $count): void
+    {
+        $this->coin_inventory->setCoinsCount($coin, $count);
     }
 }

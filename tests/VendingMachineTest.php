@@ -53,6 +53,24 @@ class VendingMachineTest extends TestCase
         ];
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('returnChangeNoStockProvider')]
+    public function testReturnChangeNoStock(float $amount, array $expected): void
+    {
+        $vm = new CustomVendingMachine(coinStock: 1);
+        $this->assertEquals($expected, $vm->returnChange($amount));
+    }
+
+    public static function returnChangeNoStockProvider(): array
+    {
+        return [
+            'exact match' => [1.0, [1.0]],
+            'multiple coins' => [2.0, [1.0, 0.25, 0.1, 0.05]], // Only one of each coin available
+            'smallest coin' => [0.2, [0.1, 0.05]],
+            'no change' => [0.0, []],
+            'complex' => [1.4, [1.0, 0.25, 0.1, 0.05]],
+        ];
+    }
+
     #[\PHPUnit\Framework\Attributes\DataProvider('buyProductSuccessProvider')]
     public function testBuyProductSuccess(array $coins, string $product): void
     {
@@ -99,4 +117,37 @@ class VendingMachineTest extends TestCase
         $vm->buyProduct('Tea');
     }
 
+    public function testBuyProductNoStockProduct(): void
+    {
+        $vm = new CustomVendingMachine(productStock: 0);
+        $vm->insertCoin(1.0);
+        $this->expectException(InvalidArgumentException::class);
+        $vm->buyProduct('Water');
+    }
+
+    public function testSetProductStock(): void
+    {
+        $vm = new CustomVendingMachine();
+        // Set stock to 2, buy twice, then expect out of stock
+        $vm->setProductStock('Water', 2);
+        $vm->insertCoin(1.0);
+        $vm->buyProduct('Water');
+        $vm->insertCoin(1.0);
+        $vm->buyProduct('Water');
+        $vm->insertCoin(1.0);
+        $this->expectException(InvalidArgumentException::class);
+        $vm->buyProduct('Water');
+    }
+
+    public function testSetCoinCount(): void
+    {
+        $vm = new CustomVendingMachine(coinStock: 0);
+        // Remove all 0.25 coins, then set to 2 and check returnChange
+        $vm->setCoinCount(0.25, 0);
+        $this->assertEquals([], $vm->returnChange(0.25));
+        $vm->setCoinCount(0.25, 2);
+        $this->assertEquals([0.25], $vm->returnChange(0.25));
+        $this->assertEquals([0.25], $vm->returnChange(0.25));
+        $this->assertEquals([], $vm->returnChange(0.25));
+    }
 }
