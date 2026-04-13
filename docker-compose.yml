@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      target: production
+
+  test:
+    build:
+      context: .
+      target: test
+    volumes:
+      -  ./coverage:/app/coverage
+    command: composer test
