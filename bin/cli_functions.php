@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Vending\CustomVendingMachine;
+use Vending\VendingMachine;
 
 /**
  * Print the help message for the CLI.
@@ -47,11 +47,11 @@ function parseInput(string $input): array
 
 /**
  * Format an array of coins into a string for output.
- * 
+ *
  * @param float[] $coins
  * @return string
  */
-function parseCoints(array $coins): string
+function parseCoins(array $coins): string
 {
     $formatted = array_map(fn($c) => number_format($c, 2), $coins);
     return implode(', ', $formatted);
@@ -60,40 +60,40 @@ function parseCoints(array $coins): string
 /**
  * Handle the RETURN-COIN command.
  *
- * @param CustomVendingMachine $vm
+ * @param VendingMachine $vm
  * @return void
  */
-function handleReturnCoin(CustomVendingMachine $vm): void
+function handleReturnCoin(VendingMachine $vm): void
 {
     $returned = $vm->returnCoins();
-    echo parseCoints($returned) . "\n";
+    echo parseCoins($returned) . "\n";
 }
 
 /**
  * Handle the GET-X command.
  *
- * @param CustomVendingMachine $vm
+ * @param VendingMachine $vm
  * @param string $command
  * @return void
  */
-function handleGetProduct(CustomVendingMachine $vm, string $command): void
+function handleGetProduct(VendingMachine $vm, string $command): void
 {
     $product = substr($command, 4);
     $change = $vm->buyProduct(ucfirst(strtolower($product)));
     echo "$product";
     if (count($change) > 0) {
-        echo ", " . parseCoints($change) . "\n";
+        echo ", " . parseCoins($change) . "\n";
     }
 }
 
 /**
  * Prompt the user to set the count for each allowed coin.
  *
- * @param CustomVendingMachine $vm
+ * @param VendingMachine $vm
  * @param object $coinInventory
  * @return void
  */
-function handleServiceSetCoins(CustomVendingMachine $vm, $coinInventory): void
+function handleServiceSetCoins(VendingMachine $vm, $coinInventory): void
 {
     $allowedCoins = $coinInventory->getCoinValues();
     foreach ($allowedCoins as $coin) {
@@ -113,11 +113,11 @@ function handleServiceSetCoins(CustomVendingMachine $vm, $coinInventory): void
 /**
  * Prompt the user to set the stock for each product.
  *
- * @param CustomVendingMachine $vm
+ * @param VendingMachine $vm
  * @param array<string, float> $productNames
  * @return void
  */
-function handleServiceSetProducts(CustomVendingMachine $vm, array $productNames): void
+function handleServiceSetProducts(VendingMachine $vm, array $productNames): void
 {
     foreach (array_keys($productNames) as $product) {
         while (true) {
@@ -136,10 +136,10 @@ function handleServiceSetProducts(CustomVendingMachine $vm, array $productNames)
 /**
  * Handle the SERVICE command: ask user to set coin counts and product stocks interactively.
  *
- * @param CustomVendingMachine $vm
+ * @param VendingMachine $vm
  * @return void
  */
-function handleService(CustomVendingMachine $vm): void
+function handleService(VendingMachine $vm): void
 {
     echo "Entering service mode. Set coin counts and product stocks.\n";
     // Access protected properties via reflection
@@ -158,12 +158,12 @@ function handleService(CustomVendingMachine $vm): void
 /**
  * Process the coins and command for the vending machine.
  *
- * @param CustomVendingMachine $vm
+ * @param VendingMachine $vm
  * @param float[] $coins
  * @param string|null $command
  * @return void
  */
-function processCommand(CustomVendingMachine $vm, array $coins, ?string $command): void
+function processCommand(VendingMachine $vm, array $coins, ?string $command): void
 {
     try {
         foreach ($coins as $coin) {
@@ -187,7 +187,7 @@ function processCommand(CustomVendingMachine $vm, array $coins, ?string $command
                     echo "Unknown command. Type 'help' for options.\n";
             }
         } elseif (count($coins) > 0) {
-            echo parseCoints($coins) . "\n";
+            echo parseCoins($coins) . "\n";
         }
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage() . "\n";

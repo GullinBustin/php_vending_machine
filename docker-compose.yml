@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      target: production
+
+  test:
+    build:
+      context: .
+      target: test
+    command: composer test
