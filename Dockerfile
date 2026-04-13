@@ -18,5 +18,7 @@ CMD ["php", "bin/cli.php"]
 
 FROM base AS test
 
+RUN pecl install pcov && docker-php-ext-enable pcov
+
 RUN composer install
 COPY . .

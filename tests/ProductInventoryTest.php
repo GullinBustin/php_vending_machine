@@ -43,6 +43,11 @@ class ProductInventoryTest extends TestCase
         $this->assertFalse($this->inventory->hasStock('Coke'));
     }
 
+    public function testHasStockOnInvalidProduct(): void
+    {
+        $this->assertFalse($this->inventory->hasStock('Sprite'));
+    }
+
     public function testGetPrice(): void
     {
         $this->assertEquals(1.5, $this->inventory->getPrice('Coke'));

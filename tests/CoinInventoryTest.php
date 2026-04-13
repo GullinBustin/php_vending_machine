@@ -31,6 +31,11 @@ class CoinInventoryTest extends TestCase
         $this->assertTrue($this->inventory->hasCoin(0.5));
     }
 
+    public function testAddAndHasCoinNotAllowed(): void
+    {
+        $this->assertFalse($this->inventory->hasCoin(2));
+    }
+
     public function testRemoveCoin(): void
     {
         $this->inventory->addCoin(1.0);
@@ -43,6 +48,12 @@ class CoinInventoryTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
         $this->inventory->removeCoin(0.25);
+    }
+
+    public function testRemoveCoinThrowsIfNotAllowed(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->inventory->removeCoin(2.0);
     }
 
     public function testAddInsertedCoins(): void
@@ -59,5 +70,11 @@ class CoinInventoryTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->inventory->addCoin(2.0);
+    }
+
+    public function testsetCoinsCountNotAllowedThrows(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->inventory->setCoinsCount(2.0, 5);
     }
 }
