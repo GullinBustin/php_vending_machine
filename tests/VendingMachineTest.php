@@ -87,7 +87,7 @@ class VendingMachineTest extends TestCase
     {
         return [
             'enough for water' => [[1.0], 'Water'],
-            'exact for soda' => [[1.0, 1.0], 'Soda'],
+            'exact for soda' => [[1.0, 0.25, 0.25], 'Soda'],
         ];
     }
 
