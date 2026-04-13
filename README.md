@@ -3,22 +3,12 @@
 
 ## Using Docker
 
-### Build the Docker image
-
-In the project root, run:
-
-```
-docker build -t php-vending-machine .
-```
-
-This will create the image with all required dependencies.
-
 ### Run the CLI (Docker)
 
 To start the interactive CLI inside the Docker container:
 
 ```
-docker run --rm -it php-vending-machine
+docker compose run --rm app
 ```
 
 ### Run the Tests (Docker)
@@ -26,7 +16,16 @@ docker run --rm -it php-vending-machine
 To execute all tests in an isolated environment inside the Docker container:
 
 ```
-docker run --rm php-vending-machine ./vendor/bin/phpunit --testdox tests
+docker compose run --rm test
+```
+
+### Run static analysis (Docker)
+
+To execute static analysis in an isolated environment inside the Docker container:
+
+```
+docker compose run --rm test composer lint
+docker compose run --rm test composer analyse
 ```
 
 ---
@@ -58,10 +57,19 @@ php bin/cli.php
 To run all tests locally:
 
 ```
-./vendor/bin/phpunit --testdox tests
+composer test
 ```
 
 This will execute all test cases in the `tests` directory and show a readable output.
+
+### Run static analysis (Local)
+
+To run static analysis:
+
+```
+composer lint
+composer analyse
+```
 
 ## Console CLI Usage
 
@@ -88,3 +96,24 @@ HELP                    # Show help
 
 **Service Mode:**
 When you enter `SERVICE`, you will be prompted to set the count for each allowed coin and the stock for each product interactively.
+
+#### Accepted Coins and Initial Stock
+
+The vending machine accepts the following coins (default initial stock: 10 units each):
+
+| Coin Value | Initial Stock |
+|------------|--------------|
+| 1.00       | 10           |
+| 0.25       | 10           |
+| 0.10       | 10           |
+| 0.05       | 10           |
+
+### Available Products, Prices, and Initial Stock
+
+The following products are available by default:
+
+| Product | Price | Initial Stock |
+|---------|-------|--------------|
+| Water   | 0.65  | 10           |
+| Juice   | 1.00  | 10           |
+| Soda    | 1.50  | 10           |

@@ -47,7 +47,7 @@ function parseInput(string $input): array
 
 /**
  * Format an array of coins into a string for output.
- * 
+ *
  * @param float[] $coins
  * @return string
  */
